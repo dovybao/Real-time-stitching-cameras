@@ -16,22 +16,22 @@ class Stitcher:
 
 		# if the cached homography matrix is None, then we need to
 		# apply keypoint matching to construct it
-		if self.cachedH is None:
+		
 			# detect keypoints and extract
-			(kpsA, featuresA) = self.detectAndDescribe(imageA)
-			(kpsB, featuresB) = self.detectAndDescribe(imageB)
+		(kpsA, featuresA) = self.detectAndDescribe(imageA)
+		(kpsB, featuresB) = self.detectAndDescribe(imageB)
 
 			# match features between the two images
-			M = self.matchKeypoints(kpsA, kpsB,
-				featuresA, featuresB, ratio, reprojThresh)
+		M = self.matchKeypoints(kpsA, kpsB,
+			featuresA, featuresB, ratio, reprojThresh)
 
 			# if the match is None, then there aren't enough matched
 			# keypoints to create a panorama
-			if M is None:
-				return None
+		if M is None:
+			return None
 
 			# cache the homography matrix
-			self.cachedH = M[1]
+		self.cachedH = M[1]
 
 		# apply a perspective transform to stitch the images together
 		# using the cached homography matrix
@@ -53,15 +53,7 @@ class Stitcher:
 			(kps, features) = descriptor.detectAndCompute(image, None)
 
 		# otherwise, we are using OpenCV 2.4.X
-		else:
-			# detect keypoints in the image
-			detector = cv2.FeatureDetector_create("SIFT")
-			kps = detector.detect(gray)
-
-			# extract features from the image
-			extractor = cv2.DescriptorExtractor_create("SIFT")
-			(kps, features) = extractor.compute(gray, kps)
-
+		
 		# convert the keypoints from KeyPoint objects to NumPy
 		# arrays
 		kps = np.float32([kp.pt for kp in kps])
